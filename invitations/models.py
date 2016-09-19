@@ -1,5 +1,6 @@
 import datetime
 
+from django.contrib.auth.models import Group
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
@@ -19,6 +20,9 @@ from . import signals
 class Invitation(models.Model):
 
     email = models.EmailField(unique=True, verbose_name=_('e-mail address'))
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='invitation', null=True)
+    first_name = models.CharField(_('first name'), max_length=30, blank=True)
+    last_name = models.CharField(_('last name'), max_length=30, blank=True)
     accepted = models.BooleanField(verbose_name=_('accepted'), default=False)
     created = models.DateTimeField(verbose_name=_('created'),
                                    default=timezone.now)
@@ -30,10 +34,13 @@ class Invitation(models.Model):
     objects = InvitationManager()
 
     @classmethod
-    def create(cls, email, inviter=None):
+    def create(cls, email, group=None, first_name=None, last_name=None, inviter=None):
         key = get_random_string(64).lower()
         instance = cls._default_manager.create(
             email=email,
+            group=group,
+            first_name=first_name,
+            last_name=last_name,
             key=key,
             inviter=inviter)
         return instance
@@ -55,6 +62,9 @@ class Invitation(models.Model):
             'invite_url': invite_url,
             'site_name': current_site.name,
             'email': self.email,
+            'group': self.group,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
             'key': self.key,
             'inviter': self.inviter,
         }
