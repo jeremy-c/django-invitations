@@ -56,7 +56,10 @@ class Invitation(models.Model):
                         else Site.objects.get_current())
         invite_url = reverse('invitations:accept-invite',
                              args=[self.key])
-        invite_url = request.build_absolute_uri(invite_url)
+        if request:
+            invite_url = request.build_absolute_uri(invite_url)
+        else:
+            invite_url = 'http://{}{}'.format(current_site.domain, invite_url)
 
         ctx = {
             'invite_url': invite_url,
