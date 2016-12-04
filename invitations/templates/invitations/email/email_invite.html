@@ -3,21 +3,22 @@
 
 {% block html %}
 
-{% blocktrans with site_name=current_site.name site_domain=current_site.domain %}
+{% blocktrans %}
 
-Beste {{ first_name }},
+<p>Beste {{ first_name }},</p>
 
-Ik heb je uitgenodigd om gebruik te maken van {{ site_name }} en de administratie van {{ group }} te bewerken.
+<p>Ik heb je uitgenodigd om gebruik te maken van {{ site_name }} en de administratie van {{ group }} te bewerken.</p>
 
-Je hoeft alleen nog je e-mail te bestigen. <a href="{{ invite_url }}">Klik hier</a>.
+<p>Je hoeft alleen nog je e-mail te bestigen. <a href="{{ invite_url }}">Klik hier!</a></p>
 
-Tot snel,
+<p>Tot snel,</p>
 
-{{ inviter }}
+<p>{{ inviter }}</p>
 
-{{ site_name }}
-{{ site_domain }}
-
+<p>
+  {{ site_name }}
+  {{ site_domain }}<br>
+</p>
 {% endblocktrans %}
 
 {% endblock %}

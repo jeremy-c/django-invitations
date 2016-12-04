@@ -69,6 +69,7 @@ class Invitation(models.Model):
             context={
                 'invite_url': invite_url,
                 'site_name': current_site.name,
+                'site_domain': current_site.domain,
                 'email': self.email,
                 'group': self.group,
                 'first_name': self.first_name,
