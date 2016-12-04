@@ -1,0 +1,23 @@
+{% load i18n l10n %}
+{% block subject %}Invitation to join {{ site_name }}{% endblock %}
+
+{% block html %}
+
+{% blocktrans with site_name=current_site.name site_domain=current_site.domain %}
+
+Beste {{ first_name }},
+
+Ik heb je uitgenodigd om gebruik te maken van {{ site_name }} en de administratie van {{ group }} te bewerken.
+
+Je hoeft alleen nog je e-mail te bestigen. <a href="{{ invite_url }}">Klik hier</a>.
+
+Tot snel,
+
+{{ inviter }}
+
+{{ site_name }}
+{{ site_domain }}
+
+{% endblocktrans %}
+
+{% endblock %}

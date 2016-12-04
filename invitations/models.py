@@ -9,6 +9,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from templated_email import get_templated_mail
 
 from .managers import InvitationManager
 from .app_settings import app_settings
@@ -61,23 +62,34 @@ class Invitation(models.Model):
         else:
             invite_url = 'http://{}{}'.format(current_site.domain, invite_url)
 
-        ctx = {
-            'invite_url': invite_url,
-            'site_name': current_site.name,
-            'email': self.email,
-            'group': self.group,
-            'first_name': self.first_name,
-            'last_name': self.last_name,
-            'key': self.key,
-            'inviter': self.inviter,
-        }
+        msg = get_templated_mail(
+            template_name='email_invite',
+            from_email=self.inviter.email,
+            to=[self.email],
+            context={
+                'invite_url': invite_url,
+                'site_name': current_site.name,
+                'email': self.email,
+                'group': self.group,
+                'first_name': self.first_name,
+                'last_name': self.last_name,
+                'key': self.key,
+                'inviter': self.inviter,
+            },
+            # Optional:
+            # cc=['cc@example.com'],
+            # bcc=['bcc@example.com'],
+            # headers={'My-Custom-Header':'Custom Value'},
+            template_dir='invitations/email/',  # Override where the method looks for email templates
+            # template_prefix="my_emails/",
+            template_suffix="html",
+        )
 
-        email_template = 'invitations/email/email_invite'
+        sender_domain = settings.ANYMAIL['MAILGUN_SENDER_DOMAIN']
+        msg.esp_extra = {"sender_domain": sender_domain}
 
-        get_invitations_adapter().send_mail(
-            email_template,
-            self.email,
-            ctx)
+        msg.send()
+
         self.sent = timezone.now()
         self.save()
 
