@@ -60,7 +60,7 @@ class Invitation(models.Model):
         if request:
             invite_url = request.build_absolute_uri(invite_url)
         else:
-            invite_url = 'http://{}{}'.format(current_site.domain, invite_url)
+            invite_url = 'https://{}{}'.format(current_site.domain, invite_url)
 
         msg = get_templated_mail(
             template_name='email_invite',
