@@ -34,6 +34,13 @@ class Invitation(models.Model):
 
     objects = InvitationManager()
 
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if self.id:
+            super(Invitation, self).save(force_insert, force_update, using, update_fields)
+        else:
+            self.create(self.email, self.group, self.first_name, self.last_name, self.inviter)
+
     @classmethod
     def create(cls, email, group=None, first_name=None, last_name=None, inviter=None):
         key = get_random_string(64).lower()
